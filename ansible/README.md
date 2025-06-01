@@ -68,10 +68,9 @@ Os resultados da auditoria são salvos localmente em:
 ```
 
 ## 📌 Observações
-```bash
+
 O inventário é construído dinamicamente com base nas VMs encontradas via API.
 
 As VMs precisam ter IP visível pelo QEMU Agent (agent = 1 no Terraform ou ativado via GUI).
 
 A chave SSH usada deve já estar autorizada nas VMs (~/.ssh/packer_key).
-```
