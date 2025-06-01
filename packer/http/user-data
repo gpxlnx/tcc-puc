@@ -1,0 +1,34 @@
+#cloud-config
+autoinstall:
+  version: 1
+  locale: en_US
+  keyboard:
+    layout: us
+  ssh:
+    install-server: true
+    allow-pw: true
+    disable_root: true
+    ssh_quiet_keygen: true
+    allow_public_ssh_keys: true
+  packages:
+    - avahi-daemon
+    - qemu-guest-agent
+    - sudo
+  storage:
+    layout:
+      name: direct
+    swap:
+      size: 0
+  user-data:
+    package_upgrade: false
+    timezone: America/Sao_Paulo
+    users:
+      - name: automation
+        groups: [adm, sudo]
+        lock-passwd: false
+        sudo: ALL=(ALL) NOPASSWD:ALL
+        shell: /bin/bash
+        # passwd: your-password
+        # - or -
+        ssh_authorized_keys:
+          - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCrZDH2aUObsLwXvFukP8YY4A76g8mEJyKu3noCD2DLLnvmq8L1EomzR+gOdpN0a8Z+X0YpR1/+g9pO1IlMpdqU+9B0OItK/QR+njtHavoDdDYohzGoClqZn4Qruu3G5uNUbM2raS3DOXOk7TxComHanwO2piDiXed98EIsZPZgp7yduWoDCF4QTiKZSaa7GOdXl3/MGtuT9O74O5vT1BBEG8VA3MIFK79HHHucm1EBKDMxGkZRVPzcZX37VbdAgRzl8vvQ9xUu7XZItCJTNdfpmSo+Yvg4WQ7TQDntnf1hlQ7h4hg37VfB3Pj9D6VBielphSdLSrxItqpSzxxxIAU9oKin5ZFS/Ma7n4zKsnkaGvMVBeVx8whhTE2MEE2zHl/vyxMTtnK7jaI0XbAQ3BdApq0DilcJeIA1sjaNFjPvIalSqCv5NcVLpZ/DZ1t3Z9hugyFLA8yWHAamqGrAOxxpWgfRRjKJkQG/nrRDblSWRs0s0RGK1pi8roEgS4JX+gA0fDhZnJuAGBFikFJupLBZ/xc+NTDHPBOx0K9Ntz8PmHnKViQ0ntc8RCLu61mzoNPKCKC7pXVVt9WRO4EnyF56NSAJ6qrz1Cc4d2owEcrEWZ/zsBxsgV/PK7q3yn4wHUkTvstPos+Uak5gKenXKpQk30gJRkOXfkN7dWLpD+v1Fw== gxavier@faker

@@ -1,0 +1,22 @@
+# Arquivos locais do Terraform
+.terraform/
+.terraform.lock.hcl
+
+# Variáveis sensíveis
+*.tfvars
+*.auto.tfvars
+terraform.tfstate
+terraform.tfstate.*
+crash.log
+
+# Backups e planos
+*.backup
+*.tfplan
+
+# Arquivos de log e saída
+*.log
+*.out
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
