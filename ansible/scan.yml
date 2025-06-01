@@ -1,0 +1,57 @@
+---
+- name: Rodar Nmap e linPEAS de dentro da própria VM
+  hosts: all
+  become: true
+  vars:
+    ansible_ssh_common_args: '-o StrictHostKeyChecking=no'
+    log_dir: "/tmp/scan_logs"
+  tasks:
+
+    - name: Instalar nmap se necessário
+      ansible.builtin.package:
+        name: nmap
+        state: present
+
+    - name: Criar diretório remoto para os scans
+      ansible.builtin.file:
+        path: /tmp/scans
+        state: directory
+        mode: '0755'
+
+    - name: Rodar nmap --script vuln na própria VM
+      ansible.builtin.shell: |
+        nmap -sV --script vuln -oN /tmp/scans/nmap_{{ inventory_hostname }}.txt {{ ansible_host }}
+      args:
+        executable: /bin/bash
+
+    - name: Baixar linpeas.sh (última versão estável)
+      ansible.builtin.get_url:
+        url: https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh
+        dest: /tmp/linpeas.sh
+        mode: '0755'
+
+    - name: Executar linPEAS na VM
+      ansible.builtin.shell: |
+        /tmp/linpeas.sh | tee /tmp/scans/linpeas_{{ inventory_hostname }}.log
+      args:
+        executable: /bin/bash
+
+    - name: Criar diretório local no host para armazenar logs
+      delegate_to: localhost
+      become: false
+      ansible.builtin.file:
+        path: "{{ log_dir }}"
+        state: directory
+        mode: '0755'
+
+    - name: Copiar logs do nmap para o host local
+      fetch:
+        src: /tmp/scans/nmap_{{ inventory_hostname }}.txt
+        dest: "{{ log_dir }}/"
+        flat: yes
+
+    - name: Copiar logs do linPEAS para o host local
+      fetch:
+        src: /tmp/scans/linpeas_{{ inventory_hostname }}.log
+        dest: "{{ log_dir }}/"
+        flat: yes
