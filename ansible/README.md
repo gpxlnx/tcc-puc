@@ -67,8 +67,8 @@ Os resultados da auditoria são salvos localmente em:
 └── .env                   # (Opcional) Variáveis de ambiente com token e URL
 ```
 
+## 📌 Observações
 ```bash
-📌 Observações
 O inventário é construído dinamicamente com base nas VMs encontradas via API.
 
 As VMs precisam ter IP visível pelo QEMU Agent (agent = 1 no Terraform ou ativado via GUI).
