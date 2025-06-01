@@ -13,6 +13,7 @@ Este projeto usa [Terraform](https://www.terraform.io/) para automatizar a cria�
 ├── vm_configs.yaml      # Configurações das VMs (nome, CPU, memória, disco, etc.)
 ├── terraform.tfvars     # (Opcional) Valores das variáveis sensíveis
 └── README.md            # Este arquivo
+```
 
 ## ⚙️ Pré-requisitos
 
