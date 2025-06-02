@@ -1,0 +1,57 @@
+---
+- name: Aplicar hardening em sistemas operacionais e serviços
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Desativar login SSH como root
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin no'
+        state: present
+      notify: Restart SSH
+
+    - name: "Remover pacotes inseguros (exemplo: telnet)"
+      apt:
+        name: telnet
+        state: absent
+
+    - name: Atualizar todos os pacotes para versões mais recentes
+      apt:
+        upgrade: dist
+        update_cache: yes
+
+    - name: Definir permissão segura no diretório /tmp
+      mount:
+        path: /tmp
+        src: tmpfs
+        fstype: tmpfs
+        opts: defaults,noexec,nosuid,nodev
+        state: mounted
+
+    - name: Verificar se firewall UFW está instalado
+      apt:
+        name: ufw
+        state: present
+
+    - name: Aplicar política de firewall segura (UFW)
+      ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
+    - name: Permitir apenas SSH e HTTP
+      ufw:
+        rule: allow
+        port: "{{ item }}"
+      loop:
+        - 22
+        - 80
+
+  handlers:
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted
+

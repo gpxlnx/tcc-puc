@@ -1,0 +1,56 @@
+---
+- name: Instalar aplicações vulneráveis e criar falhas simuladas
+  hosts: all
+  become: true
+
+  tasks:
+    - name: Instalar pacotes necessários
+      apt:
+        name:
+          - apache2
+          - php
+          - mariadb-server
+          - unzip
+          - wget
+        update_cache: yes
+
+    - name: Habilitar mod_rewrite do Apache
+      command: a2enmod rewrite
+      notify: Restart Apache
+
+    - name: Verificar se o serviço MySQL existe
+      command: systemctl status mysql
+      register: mysql_status
+      ignore_errors: true
+      changed_when: false
+
+    - name: Iniciar e habilitar Apache e MySQL
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop:
+        - apache2
+        - mysql
+      when: "'could not be found' not in mysql_status.stderr"
+
+    - name: Simular falha de SSH com root liberado
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PermitRootLogin'
+        line: 'PermitRootLogin yes'
+        state: present
+        create: yes
+      notify: Restart SSH
+
+  handlers:
+    - name: Restart Apache
+      service:
+        name: apache2
+        state: restarted
+
+    - name: Restart SSH
+      service:
+        name: ssh
+        state: restarted
+
