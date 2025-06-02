@@ -14,8 +14,7 @@ crash.log
 *.tfplan
 
 # Arquivos de log e saída
-*.log
-*.out
+.out
 
 # Arquivos do sistema
 .DS_Store
